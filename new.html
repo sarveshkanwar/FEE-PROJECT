@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>नोटपैड</title>
+    <style>
+      body {
+        background-color: red;
+        font-family: Arial, sans-serif;
+        text-align: center;
+      }
+      #notes-container {
+        max-width: 400px;
+        margin: 0 auto;
+      }
+      .note {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin: 10px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      /* Change the button styles */
+      .action-button {
+        background-color: #170808; 
+        color: white;
+        border: none;
+        padding: 10px 20px; 
+        cursor: pointer;
+      }
+      .button-container {
+        display: flex;
+        gap: 10px;
+        justify-content: space-between;
+        background-color: black; 
+        padding: 10px; 
+      }
+    </style>
+  </head>
+  <body>
+    <h1>नोटपैड</h1>
+    <div id="notes-container">
+      <div id="note-list"></div>
+      <textarea id="note-text" placeholder="लिखो अपना नोट"></textarea>
+      <div class="button-container">
+        <button class="action-button" onclick="saveNote()">दर्ज कर दो</button>
+        <button class="action-button" onclick="deleteNote()">मिटाना</button>
+      </div>
+    </div>
+
+    <script>
+     
+      function loadNotes() {
+        const notes = JSON.parse(localStorage.getItem("notes")) || [];
+        const noteList = document.getElementById("note-list");
+
+        noteList.innerHTML = "";
+
+        notes.forEach((note, index) => {
+          const noteDiv = document.createElement("div");
+          noteDiv.classList.add("note");
+          noteDiv.innerHTML = `
+                      <div>${note}</div>
+                      <button class="action-button" onclick="deleteNote(${index})">मिटाना</button>
+                  `;
+          noteList.appendChild(noteDiv);
+        });
+      }
+
+  
+      function saveNote() {
+        const noteText = document.getElementById("note-text").value;
+        if (noteText.trim() === "") return;
+
+        const notes = JSON.parse(localStorage.getItem("notes")) || [];
+        notes.push(noteText);
+        localStorage.setItem("notes", JSON.stringify(notes));
+
+        loadNotes();
+        document.getElementById("note-text").value = "";
+      }
+
+    
+      function deleteNote(index) {
+        const notes = JSON.parse(localStorage.getItem("notes")) || [];
+        notes.splice(index, 1);
+        localStorage.setItem("notes", JSON.stringify(notes));
+        loadNotes();
+      }
+
+      
+      loadNotes();
+    </script>
+  </body>
+</html>
